@@ -10,11 +10,12 @@ const App=()=>{
   const [loading,setLoading] = useState(true)
   const [statusFilter, setStatusFilter] = useState("All")
 
+  const API_BASE_URL = import.meta.env.VITE_API_URL
   //fetch jobs
   useEffect(() => {
     const fetchJobs = async () => {
       try {
-        const response = await fetch("http://localhost:5000/jobs")
+        const response = await fetch(`${API_BASE_URL}/jobs`)
         const data = await response.json()
         setJobs(data)
         setFilteredJobs(data)
@@ -26,7 +27,7 @@ const App=()=>{
     }
 
     fetchJobs()
-  }, [])
+  }, [API_BASE_URL])
 
   //filter jobs
   useEffect(() => {
@@ -40,7 +41,7 @@ const App=()=>{
 
   const addJob = async (newJob) => {
     try {
-      const response = await fetch("http://localhost:5000/add-job", {
+      const response = await fetch(`${API_BASE_URL}/add-job`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -56,7 +57,7 @@ const App=()=>{
 
   const updateJobStatus = async (id, newStatus) => {
     try {
-      await fetch(`http://localhost:5000/jobs/${id}`, {
+      await fetch(`${API_BASE_URL}/jobs/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -71,7 +72,7 @@ const App=()=>{
 
   const deleteJob = async(id)=>{
     try{
-      await fetch(`http://localhost:5000/jobs/${id}`,{
+      await fetch(`${API_BASE_URL}/jobs/${id}`,{
         method:"DELETE"
       })
       setJobs(jobs.filter((job) => job._id !== id))
