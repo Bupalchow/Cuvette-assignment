@@ -9,6 +9,7 @@ const App=()=>{
   const [filteredJobs, setFilteredJobs] = useState([])
   const [loading,setLoading] = useState(true)
   const [statusFilter, setStatusFilter] = useState("All")
+  const [sortByDate, setSortByDate] = useState(false)
 
   const API_BASE_URL = import.meta.env.VITE_API_URL
   //fetch jobs
@@ -31,13 +32,15 @@ const App=()=>{
 
   //filter jobs
   useEffect(() => {
-    if (statusFilter === "All") {
-      setFilteredJobs(jobs)
-    } else {
-      setFilteredJobs(jobs.filter((job) => job.Status === statusFilter))
+    let result = [...jobs];
+    if (statusFilter !== "All") {
+      result = result.filter((job) => job.Status === statusFilter);
     }
-  }, [statusFilter, jobs])
-
+    if (sortByDate) {
+      result.sort((a, b) => new Date(b.date) - new Date(a.date));
+    }
+    setFilteredJobs(result);
+  }, [statusFilter, sortByDate, jobs]);
 
   const addJob = async (newJob) => {
     try {
@@ -95,7 +98,7 @@ const App=()=>{
       <div className="bg-white rounded-lg shadow-md p-6">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-semibold">Your Job Applications</h2>
-          <FilterBar statusFilter={statusFilter} setStatusFilter={setStatusFilter} />
+          <FilterBar statusFilter={statusFilter} setStatusFilter={setStatusFilter} sortByDate={sortByDate} setSortByDate={setSortByDate} />
         </div>
 
         {loading ? (
